@@ -1,17 +1,19 @@
+import json
+from typing import Sequence
+
+from django.http import HttpResponse
 from django.shortcuts import render
 from django.template import loader
-from django.http import HttpResponse
 
-from mvpapp.queries import get_avg_funding_by_person, get_companies_by_person, get_investors_by_company
+from mvpapp.queries import (get_avg_funding_by_person, get_companies_by_person,
+                            get_investors_by_company)
 
-from typing import Sequence 
 
 def index(request):
   return HttpResponse("Test") 
 
 def average_funding(request, person_id: str): 
   result: int = get_avg_funding_by_person(person_id)
-  print('result', result)
   template = loader.get_template('mvpapp/paragraph.html')
   context = {
       'result': result,
@@ -26,9 +28,9 @@ def companies(request, person_id: str):
 
 def investors(request, company_name: str):
   company_investors: Sequence[str] = get_investors_by_company(company_name) 
-  template = loader.get_template('mvpapp/results_list.html')
+  template = loader.get_template('mvpapp/paragraph.html')
 
-  return HttpResponse(template.render({"results" : company_investors}, request))
+  return HttpResponse(template.render({"result" : company_investors}, request))
 
 
      

@@ -9,18 +9,6 @@ class Person(models.Model):
         return self.name
 
 
-class Job(models.Model):
-    person_id=models.CharField(max_length=255)
-    company_name=models.CharField(max_length=255)
-    company_li_name=models.CharField(max_length=255, null=True) 
-    last_title=models.CharField(max_length=255) 
-    start_date=models.DateTimeField(null=True) 
-    end_date=models.DateTimeField(null=True) 
-
-    def __str__(self):
-        return self.last_title
-
-
 class Company(models.Model):
     name=models.CharField("Company Name", max_length=255)
     company_linkedin_names=models.JSONField("Array of company linkedin names", default=None, blank=True, null=True) 
@@ -32,3 +20,15 @@ class Company(models.Model):
         return self.name
 
 
+class Job(models.Model):
+    person_id=models.CharField(max_length=255)
+    company_name=models.CharField(max_length=255)
+    company_li_name=models.CharField(max_length=255, null=True) 
+    # Null if company does not exist 
+    company = models.ForeignKey(Company, blank=True, null=True, on_delete=models.CASCADE)
+    last_title=models.CharField(max_length=255) 
+    start_date=models.DateTimeField(null=True) 
+    end_date=models.DateTimeField(null=True) 
+
+    def __str__(self):
+        return self.person_id

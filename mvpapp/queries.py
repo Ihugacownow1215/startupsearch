@@ -1,22 +1,17 @@
-from typing import Sequence 
+from typing import Sequence
 
 from mvpapp.models import Company, Job
+
 
 def get_avg_funding_by_person(
     person_id: str
 ) -> int: 
-    # TODO: should use foreign key on job company field instead (and use related_set)
-    qs = '''
-        SELECT AVG(COALESCE(known_total_funding, 0)) 
-        FROM mvpapp_job a
-        LEFT JOIN mvpapp_company b
-        ON LOWER(a.company_name) = LOWER(b.name)
-        WHERE p.person_id = %s
-    
-    ''' % person_id
-    results = Job.objects.raw(qs)
+    jobs = Job.objects.filter(person_id=person_id).exclude(company__isnull=True)
+    number_of_jobs = Job.objects.filter(person_id=person_id).count() 
 
-    return results[0]  
+    total_funding_known = sum(job.company.known_total_funding for job in jobs)
+
+    return total_funding_known / number_of_jobs  
     
 
 def get_companies_by_person(
@@ -29,8 +24,11 @@ def get_companies_by_person(
 def get_investors_by_company(
     company_li_name: str
 ) -> Sequence[str]: 
-    qs = Company.objects.exclude(company_linkedin_names__isnull=True).filter(company_linkedin_names__contains=[company_li_name])
-    return [i for i in c.investors for c in qs]
+    qs = Company.objects.exclude(company_linkedin_names__isnull=True).filter(company_linkedin_names__icontains=company_li_name)
+    if qs: 
+        return qs[0].investors
+    else:
+        return [] 
     
     
 
