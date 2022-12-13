@@ -4,6 +4,9 @@ import numpy as np
 import pandas as pd
 from mvpapp.models import Company, Job
 
+from django.utils.timezone import make_aware
+
+
 
 def parseFiles(): 
     parseCompany() 
@@ -33,8 +36,8 @@ def parseCompany():
             print("e", e)
             failure_count = failure_count + 1
 
-    print("success count", success_count)
-    print("failure", failure_count)
+    print("success companies upserted count", success_count)
+    print("failure companies upserted count", failure_count)
 
 
 def parseJob(): 
@@ -61,8 +64,8 @@ def parseJob():
             print(e)
             failure_count = failure_count + 1
 
-    print("success count", success_count)
-    print("failure", failure_count) 
+    print("success jobs upserted count", success_count)
+    print("failure jobs upserted count", failure_count) 
 
 def addJobToCompanyIfCompanyExists():
     for job in Job.objects.all(): 
