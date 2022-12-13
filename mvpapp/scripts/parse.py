@@ -30,7 +30,7 @@ def parseCompany():
             )
             success_count = success_count + 1
         except Exception as e:
-            # print("e", e)
+            print("e", e)
             failure_count = failure_count + 1
 
     print("success count", success_count)
